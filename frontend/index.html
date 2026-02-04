@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - Complete</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-check-double"></i>
+            <span>TodoApp</span>
+        </div>
+        <div class="nav-user" id="navUser">
+            <span id="userGreeting"></span>
+            <button class="btn btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- AUTH SECTION (Login/Register) -->
+    <!-- ============================================ -->
+    <section class="auth-section" id="authSection">
+        <div class="auth-container">
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm">
+                <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="handleLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <p class="auth-switch">
+                    Don't have an account? 
+                    <a href="#" onclick="showRegister()">Register here</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="auth-form hidden" id="registerForm">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <div class="form-group">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" placeholder="Create a password" required>
+                </div>
+                <button class="btn btn-success btn-block" onclick="handleRegister()">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <p class="auth-switch">
+                    Already have an account? 
+                    <a href="#" onclick="showLogin()">Login here</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- MAIN APP SECTION (After Login) -->
+    <!-- ============================================ -->
+    <main class="app-section hidden" id="appSection">
+        <!-- User Stats Card -->
+        <div class="stats-card">
+            <div class="stat-item">
+                <i class="fas fa-user"></i>
+                <div>
+                    <span class="stat-label">Username</span>
+                    <span class="stat-value" id="statUsername">-</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <span class="stat-label">Email</span>
+                    <span class="stat-value" id="statEmail">-</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-tasks"></i>
+                <div>
+                    <span class="stat-label">Todos</span>
+                    <span class="stat-value" id="statTodos">0</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-images"></i>
+                <div>
+                    <span class="stat-label">Images</span>
+                    <span class="stat-value" id="statImages">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('todos')" id="tabTodos">
+                <i class="fas fa-list-check"></i> Todos
+            </button>
+            <button class="tab-btn" onclick="switchTab('images')" id="tabImages">
+                <i class="fas fa-image"></i> Images
+            </button>
+            <button class="tab-btn" onclick="switchTab('profile')" id="tabProfile">
+                <i class="fas fa-user-cog"></i> Profile
+            </button>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TODOS TAB -->
+        <!-- ============================================ -->
+        <div class="tab-content" id="todosTab">
+            <!-- Create Todo Form -->
+            <div class="create-form">
+                <input type="text" id="todoInput" placeholder="What do you need to do?" maxlength="255">
+                <button class="btn btn-success" onclick="createTodo()">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+
+            <!-- Todos List -->
+            <div class="todos-container">
+                <h3><i class="fas fa-list"></i> Your Todos</h3>
+                <div id="todosList" class="todos-list">
+                    <!-- Todos will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- IMAGES TAB -->
+        <!-- ============================================ -->
+        <div class="tab-content hidden" id="imagesTab">
+            <!-- Upload Image Form -->
+            <div class="upload-form">
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                    <label for="imageInput" class="file-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Choose an image</span>
+                    </label>
+                </div>
+                <div class="preview-container hidden" id="previewContainer">
+                    <img id="imagePreview" alt="Preview">
+                    <span id="fileName"></span>
+                </div>
+                <button class="btn btn-success" onclick="uploadImage()">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+            </div>
+
+            <!-- Images Gallery -->
+            <div class="images-container">
+                <h3><i class="fas fa-images"></i> Your Images</h3>
+                <div id="imagesList" class="images-grid">
+                    <!-- Images will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PROFILE TAB -->
+        <!-- ============================================ -->
+        <div class="tab-content hidden" id="profileTab">
+            <div class="profile-container">
+                <h3><i class="fas fa-user-cog"></i> Update Profile</h3>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="profileUsername">Username</label>
+                        <input type="text" id="profileUsername" placeholder="Enter new username">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">Email (readonly)</label>
+                        <input type="email" id="profileEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileCurrentPassword">Current Password (required to change password)</label>
+                        <input type="password" id="profileCurrentPassword" placeholder="Enter current password">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileNewPassword">New Password</label>
+                        <input type="password" id="profileNewPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label for="profileConfirmPassword">Confirm New Password</label>
+                        <input type="password" id="profileConfirmPassword" placeholder="Confirm new password">
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn btn-primary" onclick="updateProfile()">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetProfileForm()">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================ -->
+    <!-- TOAST NOTIFICATIONS -->
+    <!-- ============================================ -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- ============================================ -->
+    <!-- LOADING OVERLAY -->
+    <!-- ============================================ -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <span>Loading...</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- EDIT TODO MODAL -->
+    <!-- ============================================ -->
+    <div class="modal hidden" id="editModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-edit"></i> Edit Todo</h3>
+            <input type="hidden" id="editTodoId">
+            <div class="form-group">
+                <label for="editTodoTitle">Title</label>
+                <input type="text" id="editTodoTitle" placeholder="Enter new title">
+            </div>
+            <div class="form-group checkbox-group">
+                <label>
+                    <input type="checkbox" id="editTodoCompleted">
+                    <span>Mark as completed</span>
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="updateTodo()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- IMAGE VIEW MODAL -->
+    <!-- ============================================ -->
+    <div class="modal hidden" id="imageModal">
+        <div class="modal-content modal-image">
+            <button class="modal-close" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="modalImage" alt="Full Image">
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
