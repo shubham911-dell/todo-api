@@ -193,4 +193,4 @@ Body: form-data, key=image, type=File
 ---
 
 ## ✅ License
-For development use only.
+safe to use, no license needed now, chill out
